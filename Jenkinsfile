@@ -2,15 +2,17 @@ pipeline {
     agent any
 
     environment {
-        SSH_PASS = credentials('SSH_PASS')
+        SAUMYA_SSH_KEY = credentials('SAUMYA_SSH_KEY')
     }
 
     stages {
         stage('Deploy to WebLogic') {
             steps {
                 script {
-                    sshagent(credentials: ['${SSH_PASS}']) {
-                        sh 'ansible-playbook -i ../ansible_host/hosts install_nginx.yml'
+                    withCredentials([sshUserPrivateKey(credentialsId: 'SAUMYA_SSH_KEY', keyFileVariable: 'SSH_KEY')]) {
+                        sh '''
+                            ssh -i $SSH_KEY saumya@10.12.120.116 'ansible-playbook -i ansible_host/hosts playbook/nginx_install.yml'
+                        '''
                     }
                 }
             }
