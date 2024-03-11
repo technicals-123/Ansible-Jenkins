@@ -3,15 +3,17 @@ pipeline {
 
     environment {
         SAUMYA_SSH_KEY = credentials('SAUMYA_SSH_KEY')
+        // WEBLOGIC_VM_IP = 'weblogic_vm_ip'
+        // SSH_USER = 'weblogic_user'
     }
 
     stages {
-        stage('Deploy to WebLogic') {
+        stage('Run Ansible Playbook') {
             steps {
                 script {
-                    withCredentials([sshUserPrivateKey(credentialsId: 'SAUMYA_SSH_KEY',keyFileVariable: 'SSH_KEY')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: 'SAUMYA_SSH_KEY', keyFileVariable: 'SSH_KEY')]) {
                         sh '''
-                            ssh -o StrictHostKeyChecking=no -i $SSH_KEY saumya@10.12.120.116 'ansible-playbook -i ansible_host/hosts playbook/nginx_install.yml'
+                            ansible-playbook -i ansible_host/hosts playbook/nginx_install.yml -u $SSH_USER --private-key=$SSH_KEY
                         '''
                     }
                 }
