@@ -13,7 +13,7 @@ pipeline {
                 script {
                     withCredentials([sshUserPrivateKey(credentialsId: 'SAUMYA_SSH_KEY', keyFileVariable: 'SSH_KEY')]) {
                         sh '''
-                            ansible-playbook -i ansible_host/hosts playbook/nginx_install.yml --private-key=$SSH_KEY
+                            ansible-playbook -i ansible_host/hosts playbooks/nginx_install.yml --private-key=$SSH_KEY
                         '''
                     }
                 }
